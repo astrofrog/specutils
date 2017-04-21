@@ -6,7 +6,7 @@ from astropy.io import fits
 from astropy.wcs import WCS
 
 from specutils.io.registers import data_loader
-from specutils.spectra import Spectrum1D
+from specutils.spectra import FITSWCSSpectrum1D
 
 
 def identify_wcs1d_fits(origin, *args, **kwargs):
@@ -18,7 +18,7 @@ def identify_wcs1d_fits(origin, *args, **kwargs):
 
 
 @data_loader("wcs1d-fits-reader", identifier=identify_wcs1d_fits,
-             dtype=Spectrum1D)
+             dtype=FITSWCSSpectrum1D)
 def wcs1d_fits(file_name, **kwargs):
     # name is not used; what was it for?
     # name = os.path.basename(file_name.rstrip(os.sep)).rsplit('.', 1)[0]
@@ -34,5 +34,4 @@ def wcs1d_fits(file_name, **kwargs):
 
         meta = {'header': header}
 
-    return Spectrum1D(flux=data, wcs=wcs, meta=meta)
-
+    return FITSWCSSpectrum1D(flux=data, wcs=wcs, meta=meta)
