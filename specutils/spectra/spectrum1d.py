@@ -6,8 +6,56 @@ from astropy.wcs import WCS, WCSSUB_SPECTRAL
 from astropy.units import Unit, Quantity
 import astropy.units.equivalencies as eq
 
-
 __all__ = ['Spectrum1D']
+
+
+class SpectrumMixin(object):
+
+    @property  # make this lazy?
+    def spectral_wcs(self):
+        return self.wcs.sub([WCSSUB_SPECTRAL])
+
+    @property
+    def _spectral_axis_wcs_index(self):
+        # TODO: simplify
+        for index, axis_type in enumerate(self.wcs.get_axis_types()):
+            if axis_type['coordinate_type'] == 'spectral':
+                return index
+        raise Exception('Spectral axis not found')
+
+    @property
+    def _spectral_axis_numpy_index(self):
+        return self.data.ndim - 1 - self._spectral_axis_wcs_index
+
+    @property
+    def _spectral_axis_len(self):
+        return self.data.shape[self._spectral_axis_numpy_index]
+
+    @property
+    def dispersion(self):
+
+        spectral_wcs = self.spectral_wcs
+
+        if spectral_wcs.naxis == 0:
+            raise TypeError('WCS has no spectral axis')
+
+        dispersion = spectral_wcs.all_pix2world(np.arange(self._spectral_axis_len), 0)[0]
+
+        # Try to get the dispersion unit information
+        try:
+            disp_unit = self.wcs.wcs.cunit[self._spectral_axis_wcs_index]
+        except AttributeError:
+            logging.warning("No dispersion unit information in WCS.")
+            disp_unit = Unit("")
+
+        dispersion = dispersion * disp_unit
+
+        return dispersion
+
+
+
+
+
 
 class Spectrum1D(NDDataRef):
     """
