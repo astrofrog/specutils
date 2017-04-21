@@ -6,7 +6,7 @@ from astropy.io import fits
 from astropy.wcs import WCS
 
 from ..registers import data_loader
-from ...spectra import FITSWCSSpectrum1D,Spectrum1D
+from ...spectra import Spectrum1D
 
 
 def identify_wcs1d_fits(origin, *args, **kwargs):
@@ -34,4 +34,4 @@ def wcs1d_fits(file_name, **kwargs):
 
         meta = {'header': header}
 
-    return FITSWCSSpectrum1D(flux=data, wcs=wcs, meta=meta)
+    return Spectrum1D(flux=data, wcs=wcs, meta=meta)

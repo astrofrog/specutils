@@ -8,9 +8,9 @@ from astropy.wcs import WCS, WCSSUB_SPECTRAL
 from astropy.units import Unit, Quantity
 from astropy import units as u
 
-from .spectrum_mixin import OneDSpectrumMixin, FITSWCSMixin
+from .spectrum_mixin import OneDSpectrumMixin
 
-__all__ = ['Spectrum1D', 'FITSWCSSpectrum1D']
+__all__ = ['Spectrum1D']
 
 
 class Spectrum1D(OneDSpectrumMixin,NDDataRef):
@@ -24,7 +24,7 @@ class Spectrum1D(OneDSpectrumMixin,NDDataRef):
             flux = Quantity(flux, unit=unit or "Jy")
 
         if spectral_axis is not None and not isinstance(spectral_axis, Quantity):
-            spectral_axis = Quantity(spectral_axis, unit=spectral_axis_unit or "Angstrom")
+            spectral_axis = Quantity(spectral_axis, unit=spectral_axis_unit or u.AA)
 
         # If spectral_axis had not been defined, attempt to use the wcs
         # information, if it exists
@@ -73,6 +73,3 @@ class Spectrum1D(OneDSpectrumMixin,NDDataRef):
     @property
     def energy(self):
         return self.spectral_axis.to(u.ev, u.spectral())
-
-class FITSWCSSpectrum1D(FITSWCSMixin, Spectrum1D):
-    pass
