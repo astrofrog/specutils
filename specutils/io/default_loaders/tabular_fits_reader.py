@@ -1,8 +1,6 @@
-from __future__ import absolute_import, division
-import six
-
 import os
 
+import six
 from astropy.io import fits
 from astropy.nddata import StdDevUncertainty
 from astropy.table import Table
@@ -14,10 +12,12 @@ from ...spectra import Spectrum1D
 
 
 def identify_tabular_fits(origin, *args, **kwargs):
+    fh = fits.open(args[0])
     return (isinstance(args[0], six.string_types) and
             os.path.splitext(args[0].lower())[1] == '.fits' and
-            isinstance(fits.open(args[0])[1], fits.BinTableHDU)
-            )
+            len(fh) > 1 and
+            isinstance(fh[1], fits.BinTableHDU)
+           )
 
 
 @data_loader("tabular-fits", identifier=identify_tabular_fits,

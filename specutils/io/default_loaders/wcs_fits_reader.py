@@ -5,8 +5,8 @@ from astropy import units as u
 from astropy.io import fits
 from astropy.wcs import WCS
 
-from specutils.io.registers import data_loader
-from specutils.spectra import FITSWCSSpectrum1D
+from ..registers import data_loader
+from ...spectra import FITSWCSSpectrum1D,Spectrum1D
 
 
 def identify_wcs1d_fits(origin, *args, **kwargs):
@@ -17,8 +17,8 @@ def identify_wcs1d_fits(origin, *args, **kwargs):
            )
 
 
-@data_loader("wcs1d-fits-reader", identifier=identify_wcs1d_fits,
-             dtype=FITSWCSSpectrum1D)
+@data_loader("wcs1d-fits", identifier=identify_wcs1d_fits,
+             dtype=Spectrum1D)
 def wcs1d_fits(file_name, **kwargs):
     # name is not used; what was it for?
     # name = os.path.basename(file_name.rstrip(os.sep)).rsplit('.', 1)[0]
